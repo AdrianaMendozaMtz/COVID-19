@@ -1,0 +1,1877 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{relative cases overtime of Covid }
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{pd}\PY{o}{.}\PY{n}{set\PYZus{}option}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{display.max\PYZus{}columns}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+m+mi}{68}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{url}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{https://covid.ourworldindata.org/data/owid\PYZhy{}covid\PYZhy{}data.csv}\PY{l+s+s1}{\PYZsq{}}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{pd\PYZus{}raw}\PY{o}{=}\PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{n}{url}\PY{p}{,}\PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{,}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{pd\PYZus{}raw}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       iso\_code continent     location        date  total\_cases  new\_cases  \textbackslash{}
+0           AFG      Asia  Afghanistan  2020-02-24          5.0        5.0
+1           AFG      Asia  Afghanistan  2020-02-25          5.0        0.0
+2           AFG      Asia  Afghanistan  2020-02-26          5.0        0.0
+3           AFG      Asia  Afghanistan  2020-02-27          5.0        0.0
+4           AFG      Asia  Afghanistan  2020-02-28          5.0        0.0
+{\ldots}         {\ldots}       {\ldots}          {\ldots}         {\ldots}          {\ldots}        {\ldots}
+197925      ZWE    Africa     Zimbabwe  2022-06-26     255355.0       46.0
+197926      ZWE    Africa     Zimbabwe  2022-06-27     255383.0       28.0
+197927      ZWE    Africa     Zimbabwe  2022-06-28     255383.0        0.0
+197928      ZWE    Africa     Zimbabwe  2022-06-29     255520.0      137.0
+197929      ZWE    Africa     Zimbabwe  2022-06-30     255586.0       66.0
+
+        new\_cases\_smoothed  total\_deaths  new\_deaths  new\_deaths\_smoothed  \textbackslash{}
+0                      NaN           NaN         NaN                  NaN
+1                      NaN           NaN         NaN                  NaN
+2                      NaN           NaN         NaN                  NaN
+3                      NaN           NaN         NaN                  NaN
+4                      NaN           NaN         NaN                  NaN
+{\ldots}                    {\ldots}           {\ldots}         {\ldots}                  {\ldots}
+197925              79.143        5549.0         0.0                2.143
+197926              78.857        5549.0         0.0                2.143
+197927              66.286        5549.0         0.0                1.857
+197928              67.286        5553.0         4.0                1.714
+197929              64.286        5555.0         2.0                1.857
+
+        total\_cases\_per\_million  new\_cases\_per\_million  \textbackslash{}
+0                         0.126                  0.126
+1                         0.126                  0.000
+2                         0.126                  0.000
+3                         0.126                  0.000
+4                         0.126                  0.000
+{\ldots}                         {\ldots}                    {\ldots}
+197925                16919.700                  3.048
+197926                16921.555                  1.855
+197927                16921.555                  0.000
+197928                16930.632                  9.078
+197929                16935.006                  4.373
+
+        new\_cases\_smoothed\_per\_million  total\_deaths\_per\_million  \textbackslash{}
+0                                  NaN                       NaN
+1                                  NaN                       NaN
+2                                  NaN                       NaN
+3                                  NaN                       NaN
+4                                  NaN                       NaN
+{\ldots}                                {\ldots}                       {\ldots}
+197925                           5.244                   367.674
+197926                           5.225                   367.674
+197927                           4.392                   367.674
+197928                           4.458                   367.939
+197929                           4.260                   368.072
+
+        new\_deaths\_per\_million  new\_deaths\_smoothed\_per\_million  \textbackslash{}
+0                          NaN                              NaN
+1                          NaN                              NaN
+2                          NaN                              NaN
+3                          NaN                              NaN
+4                          NaN                              NaN
+{\ldots}                        {\ldots}                              {\ldots}
+197925                   0.000                            0.142
+197926                   0.000                            0.142
+197927                   0.000                            0.123
+197928                   0.265                            0.114
+197929                   0.133                            0.123
+
+        reproduction\_rate  icu\_patients  icu\_patients\_per\_million  \textbackslash{}
+0                     NaN           NaN                       NaN
+1                     NaN           NaN                       NaN
+2                     NaN           NaN                       NaN
+3                     NaN           NaN                       NaN
+4                     NaN           NaN                       NaN
+{\ldots}                   {\ldots}           {\ldots}                       {\ldots}
+197925               0.86           NaN                       NaN
+197926                NaN           NaN                       NaN
+197927                NaN           NaN                       NaN
+197928                NaN           NaN                       NaN
+197929                NaN           NaN                       NaN
+
+        hosp\_patients  hosp\_patients\_per\_million  weekly\_icu\_admissions  \textbackslash{}
+0                 NaN                        NaN                    NaN
+1                 NaN                        NaN                    NaN
+2                 NaN                        NaN                    NaN
+3                 NaN                        NaN                    NaN
+4                 NaN                        NaN                    NaN
+{\ldots}               {\ldots}                        {\ldots}                    {\ldots}
+197925            NaN                        NaN                    NaN
+197926            NaN                        NaN                    NaN
+197927            NaN                        NaN                    NaN
+197928            NaN                        NaN                    NaN
+197929            NaN                        NaN                    NaN
+
+        weekly\_icu\_admissions\_per\_million  weekly\_hosp\_admissions  \textbackslash{}
+0                                     NaN                     NaN
+1                                     NaN                     NaN
+2                                     NaN                     NaN
+3                                     NaN                     NaN
+4                                     NaN                     NaN
+{\ldots}                                   {\ldots}                     {\ldots}
+197925                                NaN                     NaN
+197926                                NaN                     NaN
+197927                                NaN                     NaN
+197928                                NaN                     NaN
+197929                                NaN                     NaN
+
+        weekly\_hosp\_admissions\_per\_million  total\_tests  new\_tests  \textbackslash{}
+0                                      NaN          NaN        NaN
+1                                      NaN          NaN        NaN
+2                                      NaN          NaN        NaN
+3                                      NaN          NaN        NaN
+4                                      NaN          NaN        NaN
+{\ldots}                                    {\ldots}          {\ldots}        {\ldots}
+197925                                 NaN          NaN        NaN
+197926                                 NaN          NaN        NaN
+197927                                 NaN          NaN        NaN
+197928                                 NaN          NaN        NaN
+197929                                 NaN          NaN        NaN
+
+        total\_tests\_per\_thousand  new\_tests\_per\_thousand  new\_tests\_smoothed  \textbackslash{}
+0                            NaN                     NaN                 NaN
+1                            NaN                     NaN                 NaN
+2                            NaN                     NaN                 NaN
+3                            NaN                     NaN                 NaN
+4                            NaN                     NaN                 NaN
+{\ldots}                          {\ldots}                     {\ldots}                 {\ldots}
+197925                       NaN                     NaN                 NaN
+197926                       NaN                     NaN                 NaN
+197927                       NaN                     NaN                 NaN
+197928                       NaN                     NaN                 NaN
+197929                       NaN                     NaN                 NaN
+
+        new\_tests\_smoothed\_per\_thousand  positive\_rate  tests\_per\_case  \textbackslash{}
+0                                   NaN            NaN             NaN
+1                                   NaN            NaN             NaN
+2                                   NaN            NaN             NaN
+3                                   NaN            NaN             NaN
+4                                   NaN            NaN             NaN
+{\ldots}                                 {\ldots}            {\ldots}             {\ldots}
+197925                              NaN            NaN             NaN
+197926                              NaN            NaN             NaN
+197927                              NaN            NaN             NaN
+197928                              NaN            NaN             NaN
+197929                              NaN            NaN             NaN
+
+       tests\_units  total\_vaccinations  people\_vaccinated  \textbackslash{}
+0              NaN                 NaN                NaN
+1              NaN                 NaN                NaN
+2              NaN                 NaN                NaN
+3              NaN                 NaN                NaN
+4              NaN                 NaN                NaN
+{\ldots}            {\ldots}                 {\ldots}                {\ldots}
+197925         NaN          12006666.0          6314124.0
+197926         NaN                 NaN                NaN
+197927         NaN                 NaN                NaN
+197928         NaN                 NaN                NaN
+197929         NaN                 NaN                NaN
+
+        people\_fully\_vaccinated  total\_boosters  new\_vaccinations  \textbackslash{}
+0                           NaN             NaN               NaN
+1                           NaN             NaN               NaN
+2                           NaN             NaN               NaN
+3                           NaN             NaN               NaN
+4                           NaN             NaN               NaN
+{\ldots}                         {\ldots}             {\ldots}               {\ldots}
+197925                4624556.0       1067986.0            3949.0
+197926                      NaN             NaN               NaN
+197927                      NaN             NaN               NaN
+197928                      NaN             NaN               NaN
+197929                      NaN             NaN               NaN
+
+        new\_vaccinations\_smoothed  total\_vaccinations\_per\_hundred  \textbackslash{}
+0                             NaN                             NaN
+1                             NaN                             NaN
+2                             NaN                             NaN
+3                             NaN                             NaN
+4                             NaN                             NaN
+{\ldots}                           {\ldots}                             {\ldots}
+197925                    15862.0                           79.56
+197926                        NaN                             NaN
+197927                        NaN                             NaN
+197928                        NaN                             NaN
+197929                        NaN                             NaN
+
+        people\_vaccinated\_per\_hundred  people\_fully\_vaccinated\_per\_hundred  \textbackslash{}
+0                                 NaN                                  NaN
+1                                 NaN                                  NaN
+2                                 NaN                                  NaN
+3                                 NaN                                  NaN
+4                                 NaN                                  NaN
+{\ldots}                               {\ldots}                                  {\ldots}
+197925                          41.84                                30.64
+197926                            NaN                                  NaN
+197927                            NaN                                  NaN
+197928                            NaN                                  NaN
+197929                            NaN                                  NaN
+
+        total\_boosters\_per\_hundred  new\_vaccinations\_smoothed\_per\_million  \textbackslash{}
+0                              NaN                                    NaN
+1                              NaN                                    NaN
+2                              NaN                                    NaN
+3                              NaN                                    NaN
+4                              NaN                                    NaN
+{\ldots}                            {\ldots}                                    {\ldots}
+197925                        7.08                                 1051.0
+197926                         NaN                                    NaN
+197927                         NaN                                    NaN
+197928                         NaN                                    NaN
+197929                         NaN                                    NaN
+
+        new\_people\_vaccinated\_smoothed  \textbackslash{}
+0                                  NaN
+1                                  NaN
+2                                  NaN
+3                                  NaN
+4                                  NaN
+{\ldots}                                {\ldots}
+197925                          4726.0
+197926                             NaN
+197927                             NaN
+197928                             NaN
+197929                             NaN
+
+        new\_people\_vaccinated\_smoothed\_per\_hundred  stringency\_index  \textbackslash{}
+0                                              NaN              8.33
+1                                              NaN              8.33
+2                                              NaN              8.33
+3                                              NaN              8.33
+4                                              NaN              8.33
+{\ldots}                                            {\ldots}               {\ldots}
+197925                                       0.031               NaN
+197926                                         NaN               NaN
+197927                                         NaN               NaN
+197928                                         NaN               NaN
+197929                                         NaN               NaN
+
+        population  population\_density  median\_age  aged\_65\_older  \textbackslash{}
+0       39835428.0              54.422        18.6          2.581
+1       39835428.0              54.422        18.6          2.581
+2       39835428.0              54.422        18.6          2.581
+3       39835428.0              54.422        18.6          2.581
+4       39835428.0              54.422        18.6          2.581
+{\ldots}            {\ldots}                 {\ldots}         {\ldots}            {\ldots}
+197925  15092171.0              42.729        19.6          2.822
+197926  15092171.0              42.729        19.6          2.822
+197927  15092171.0              42.729        19.6          2.822
+197928  15092171.0              42.729        19.6          2.822
+197929  15092171.0              42.729        19.6          2.822
+
+        aged\_70\_older  gdp\_per\_capita  extreme\_poverty  cardiovasc\_death\_rate  \textbackslash{}
+0               1.337        1803.987              NaN                597.029
+1               1.337        1803.987              NaN                597.029
+2               1.337        1803.987              NaN                597.029
+3               1.337        1803.987              NaN                597.029
+4               1.337        1803.987              NaN                597.029
+{\ldots}               {\ldots}             {\ldots}              {\ldots}                    {\ldots}
+197925          1.882        1899.775             21.4                307.846
+197926          1.882        1899.775             21.4                307.846
+197927          1.882        1899.775             21.4                307.846
+197928          1.882        1899.775             21.4                307.846
+197929          1.882        1899.775             21.4                307.846
+
+        diabetes\_prevalence  female\_smokers  male\_smokers  \textbackslash{}
+0                      9.59             NaN           NaN
+1                      9.59             NaN           NaN
+2                      9.59             NaN           NaN
+3                      9.59             NaN           NaN
+4                      9.59             NaN           NaN
+{\ldots}                     {\ldots}             {\ldots}           {\ldots}
+197925                 1.82             1.6          30.7
+197926                 1.82             1.6          30.7
+197927                 1.82             1.6          30.7
+197928                 1.82             1.6          30.7
+197929                 1.82             1.6          30.7
+
+        handwashing\_facilities  hospital\_beds\_per\_thousand  life\_expectancy  \textbackslash{}
+0                       37.746                         0.5            64.83
+1                       37.746                         0.5            64.83
+2                       37.746                         0.5            64.83
+3                       37.746                         0.5            64.83
+4                       37.746                         0.5            64.83
+{\ldots}                        {\ldots}                         {\ldots}              {\ldots}
+197925                  36.791                         1.7            61.49
+197926                  36.791                         1.7            61.49
+197927                  36.791                         1.7            61.49
+197928                  36.791                         1.7            61.49
+197929                  36.791                         1.7            61.49
+
+        human\_development\_index  excess\_mortality\_cumulative\_absolute  \textbackslash{}
+0                         0.511                                   NaN
+1                         0.511                                   NaN
+2                         0.511                                   NaN
+3                         0.511                                   NaN
+4                         0.511                                   NaN
+{\ldots}                         {\ldots}                                   {\ldots}
+197925                    0.571                                   NaN
+197926                    0.571                                   NaN
+197927                    0.571                                   NaN
+197928                    0.571                                   NaN
+197929                    0.571                                   NaN
+
+        excess\_mortality\_cumulative  excess\_mortality  \textbackslash{}
+0                               NaN               NaN
+1                               NaN               NaN
+2                               NaN               NaN
+3                               NaN               NaN
+4                               NaN               NaN
+{\ldots}                             {\ldots}               {\ldots}
+197925                          NaN               NaN
+197926                          NaN               NaN
+197927                          NaN               NaN
+197928                          NaN               NaN
+197929                          NaN               NaN
+
+        excess\_mortality\_cumulative\_per\_million
+0                                           NaN
+1                                           NaN
+2                                           NaN
+3                                           NaN
+4                                           NaN
+{\ldots}                                         {\ldots}
+197925                                      NaN
+197926                                      NaN
+197927                                      NaN
+197928                                      NaN
+197929                                      NaN
+
+[197930 rows x 67 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{pd\PYZus{}raw}\PY{o}{.}\PY{n}{to\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Covid\PYZus{}19\PYZus{}cases\PYZus{}data.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{;}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{pd\PYZus{}MEX}\PY{o}{=}\PY{n}{pd\PYZus{}raw}\PY{p}{[}\PY{n}{pd\PYZus{}raw}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{location}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{==}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Mexico}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n}{pd\PYZus{}MEX}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       iso\_code      continent location        date  total\_cases  new\_cases  \textbackslash{}
+114895      MEX  North America   Mexico  2020-01-01          NaN        NaN
+114896      MEX  North America   Mexico  2020-01-02          NaN        NaN
+114897      MEX  North America   Mexico  2020-01-03          NaN        NaN
+114898      MEX  North America   Mexico  2020-01-04          NaN        NaN
+114899      MEX  North America   Mexico  2020-01-05          NaN        NaN
+{\ldots}         {\ldots}            {\ldots}      {\ldots}         {\ldots}          {\ldots}        {\ldots}
+115802      MEX  North America   Mexico  2022-06-26    5962615.0     5883.0
+115803      MEX  North America   Mexico  2022-06-27    5965958.0     3343.0
+115804      MEX  North America   Mexico  2022-06-28    5986917.0    20959.0
+115805      MEX  North America   Mexico  2022-06-29    5986917.0        0.0
+115806      MEX  North America   Mexico  2022-06-30    6034602.0    47685.0
+
+        new\_cases\_smoothed  total\_deaths  new\_deaths  new\_deaths\_smoothed  \textbackslash{}
+114895                 NaN           NaN         NaN                  NaN
+114896                 NaN           NaN         NaN                  NaN
+114897                 NaN           NaN         NaN                  NaN
+114898                 NaN           NaN         NaN                  NaN
+114899                 NaN           NaN         NaN                  NaN
+{\ldots}                    {\ldots}           {\ldots}         {\ldots}                  {\ldots}
+115802           12415.714      325580.0         4.0               24.571
+115803           12588.714      325596.0        16.0               25.571
+115804           13618.286      325638.0        42.0               25.714
+115805           13618.286      325638.0         0.0               25.714
+115806           18235.571      325716.0        78.0               32.714
+
+        total\_cases\_per\_million  new\_cases\_per\_million  \textbackslash{}
+114895                      NaN                    NaN
+114896                      NaN                    NaN
+114897                      NaN                    NaN
+114898                      NaN                    NaN
+114899                      NaN                    NaN
+{\ldots}                         {\ldots}                    {\ldots}
+115802                45773.940                 45.163
+115803                45799.603                 25.664
+115804                45960.502                160.899
+115805                45960.502                  0.000
+115806                46326.571                366.069
+
+        new\_cases\_smoothed\_per\_million  total\_deaths\_per\_million  \textbackslash{}
+114895                             NaN                       NaN
+114896                             NaN                       NaN
+114897                             NaN                       NaN
+114898                             NaN                       NaN
+114899                             NaN                       NaN
+{\ldots}                                {\ldots}                       {\ldots}
+115802                          95.313                  2499.420
+115803                          96.641                  2499.543
+115804                         104.545                  2499.865
+115805                         104.545                  2499.865
+115806                         139.991                  2500.464
+
+        new\_deaths\_per\_million  new\_deaths\_smoothed\_per\_million  \textbackslash{}
+114895                     NaN                              NaN
+114896                     NaN                              NaN
+114897                     NaN                              NaN
+114898                     NaN                              NaN
+114899                     NaN                              NaN
+{\ldots}                        {\ldots}                              {\ldots}
+115802                   0.031                            0.189
+115803                   0.123                            0.196
+115804                   0.322                            0.197
+115805                   0.000                            0.197
+115806                   0.599                            0.251
+
+        reproduction\_rate  icu\_patients  icu\_patients\_per\_million  \textbackslash{}
+114895                NaN           NaN                       NaN
+114896                NaN           NaN                       NaN
+114897                NaN           NaN                       NaN
+114898                NaN           NaN                       NaN
+114899                NaN           NaN                       NaN
+{\ldots}                   {\ldots}           {\ldots}                       {\ldots}
+115802               1.59           NaN                       NaN
+115803                NaN           NaN                       NaN
+115804                NaN           NaN                       NaN
+115805                NaN           NaN                       NaN
+115806                NaN           NaN                       NaN
+
+        hosp\_patients  hosp\_patients\_per\_million  weekly\_icu\_admissions  \textbackslash{}
+114895            NaN                        NaN                    NaN
+114896            NaN                        NaN                    NaN
+114897            NaN                        NaN                    NaN
+114898            NaN                        NaN                    NaN
+114899            NaN                        NaN                    NaN
+{\ldots}               {\ldots}                        {\ldots}                    {\ldots}
+115802            NaN                        NaN                    NaN
+115803            NaN                        NaN                    NaN
+115804            NaN                        NaN                    NaN
+115805            NaN                        NaN                    NaN
+115806            NaN                        NaN                    NaN
+
+        weekly\_icu\_admissions\_per\_million  weekly\_hosp\_admissions  \textbackslash{}
+114895                                NaN                     NaN
+114896                                NaN                     NaN
+114897                                NaN                     NaN
+114898                                NaN                     NaN
+114899                                NaN                     NaN
+{\ldots}                                   {\ldots}                     {\ldots}
+115802                                NaN                     NaN
+115803                                NaN                     NaN
+115804                                NaN                     NaN
+115805                                NaN                     NaN
+115806                                NaN                     NaN
+
+        weekly\_hosp\_admissions\_per\_million  total\_tests  new\_tests  \textbackslash{}
+114895                                 NaN         25.0       25.0
+114896                                 NaN         97.0       72.0
+114897                                 NaN        186.0       89.0
+114898                                 NaN        231.0       45.0
+114899                                 NaN        312.0       81.0
+{\ldots}                                    {\ldots}          {\ldots}        {\ldots}
+115802                                 NaN          NaN        NaN
+115803                                 NaN          NaN        NaN
+115804                                 NaN          NaN        NaN
+115805                                 NaN          NaN        NaN
+115806                                 NaN          NaN        NaN
+
+        total\_tests\_per\_thousand  new\_tests\_per\_thousand  new\_tests\_smoothed  \textbackslash{}
+114895                     0.000                   0.000                 NaN
+114896                     0.001                   0.001                 NaN
+114897                     0.001                   0.001                 NaN
+114898                     0.002                   0.000                 NaN
+114899                     0.002                   0.001                 NaN
+{\ldots}                          {\ldots}                     {\ldots}                 {\ldots}
+115802                       NaN                     NaN                 NaN
+115803                       NaN                     NaN                 NaN
+115804                       NaN                     NaN                 NaN
+115805                       NaN                     NaN                 NaN
+115806                       NaN                     NaN                 NaN
+
+        new\_tests\_smoothed\_per\_thousand  positive\_rate  tests\_per\_case  \textbackslash{}
+114895                              NaN            NaN             NaN
+114896                              NaN            NaN             NaN
+114897                              NaN            NaN             NaN
+114898                              NaN            NaN             NaN
+114899                              NaN            NaN             NaN
+{\ldots}                                 {\ldots}            {\ldots}             {\ldots}
+115802                              NaN            NaN             NaN
+115803                              NaN            NaN             NaN
+115804                              NaN            NaN             NaN
+115805                              NaN            NaN             NaN
+115806                              NaN            NaN             NaN
+
+          tests\_units  total\_vaccinations  people\_vaccinated  \textbackslash{}
+114895  people tested                 NaN                NaN
+114896  people tested                 NaN                NaN
+114897  people tested                 NaN                NaN
+114898  people tested                 NaN                NaN
+114899  people tested                 NaN                NaN
+{\ldots}               {\ldots}                 {\ldots}                {\ldots}
+115802            NaN                 NaN                NaN
+115803            NaN                 NaN                NaN
+115804            NaN                 NaN                NaN
+115805            NaN                 NaN                NaN
+115806            NaN                 NaN                NaN
+
+        people\_fully\_vaccinated  total\_boosters  new\_vaccinations  \textbackslash{}
+114895                      NaN             NaN               NaN
+114896                      NaN             NaN               NaN
+114897                      NaN             NaN               NaN
+114898                      NaN             NaN               NaN
+114899                      NaN             NaN               NaN
+{\ldots}                         {\ldots}             {\ldots}               {\ldots}
+115802                      NaN             NaN               NaN
+115803                      NaN             NaN               NaN
+115804                      NaN             NaN               NaN
+115805                      NaN             NaN               NaN
+115806                      NaN             NaN               NaN
+
+        new\_vaccinations\_smoothed  total\_vaccinations\_per\_hundred  \textbackslash{}
+114895                        NaN                             NaN
+114896                        NaN                             NaN
+114897                        NaN                             NaN
+114898                        NaN                             NaN
+114899                        NaN                             NaN
+{\ldots}                           {\ldots}                             {\ldots}
+115802                        NaN                             NaN
+115803                        NaN                             NaN
+115804                        NaN                             NaN
+115805                        NaN                             NaN
+115806                        NaN                             NaN
+
+        people\_vaccinated\_per\_hundred  people\_fully\_vaccinated\_per\_hundred  \textbackslash{}
+114895                            NaN                                  NaN
+114896                            NaN                                  NaN
+114897                            NaN                                  NaN
+114898                            NaN                                  NaN
+114899                            NaN                                  NaN
+{\ldots}                               {\ldots}                                  {\ldots}
+115802                            NaN                                  NaN
+115803                            NaN                                  NaN
+115804                            NaN                                  NaN
+115805                            NaN                                  NaN
+115806                            NaN                                  NaN
+
+        total\_boosters\_per\_hundred  new\_vaccinations\_smoothed\_per\_million  \textbackslash{}
+114895                         NaN                                    NaN
+114896                         NaN                                    NaN
+114897                         NaN                                    NaN
+114898                         NaN                                    NaN
+114899                         NaN                                    NaN
+{\ldots}                            {\ldots}                                    {\ldots}
+115802                         NaN                                    NaN
+115803                         NaN                                    NaN
+115804                         NaN                                    NaN
+115805                         NaN                                    NaN
+115806                         NaN                                    NaN
+
+        new\_people\_vaccinated\_smoothed  \textbackslash{}
+114895                             NaN
+114896                             NaN
+114897                             NaN
+114898                             NaN
+114899                             NaN
+{\ldots}                                {\ldots}
+115802                             NaN
+115803                             NaN
+115804                             NaN
+115805                             NaN
+115806                             NaN
+
+        new\_people\_vaccinated\_smoothed\_per\_hundred  stringency\_index  \textbackslash{}
+114895                                         NaN               0.0
+114896                                         NaN               0.0
+114897                                         NaN               0.0
+114898                                         NaN               0.0
+114899                                         NaN               0.0
+{\ldots}                                            {\ldots}               {\ldots}
+115802                                         NaN               NaN
+115803                                         NaN               NaN
+115804                                         NaN               NaN
+115805                                         NaN               NaN
+115806                                         NaN               NaN
+
+         population  population\_density  median\_age  aged\_65\_older  \textbackslash{}
+114895  130262220.0              66.444        29.3          6.857
+114896  130262220.0              66.444        29.3          6.857
+114897  130262220.0              66.444        29.3          6.857
+114898  130262220.0              66.444        29.3          6.857
+114899  130262220.0              66.444        29.3          6.857
+{\ldots}             {\ldots}                 {\ldots}         {\ldots}            {\ldots}
+115802  130262220.0              66.444        29.3          6.857
+115803  130262220.0              66.444        29.3          6.857
+115804  130262220.0              66.444        29.3          6.857
+115805  130262220.0              66.444        29.3          6.857
+115806  130262220.0              66.444        29.3          6.857
+
+        aged\_70\_older  gdp\_per\_capita  extreme\_poverty  cardiovasc\_death\_rate  \textbackslash{}
+114895          4.321       17336.469              2.5                152.783
+114896          4.321       17336.469              2.5                152.783
+114897          4.321       17336.469              2.5                152.783
+114898          4.321       17336.469              2.5                152.783
+114899          4.321       17336.469              2.5                152.783
+{\ldots}               {\ldots}             {\ldots}              {\ldots}                    {\ldots}
+115802          4.321       17336.469              2.5                152.783
+115803          4.321       17336.469              2.5                152.783
+115804          4.321       17336.469              2.5                152.783
+115805          4.321       17336.469              2.5                152.783
+115806          4.321       17336.469              2.5                152.783
+
+        diabetes\_prevalence  female\_smokers  male\_smokers  \textbackslash{}
+114895                13.06             6.9          21.4
+114896                13.06             6.9          21.4
+114897                13.06             6.9          21.4
+114898                13.06             6.9          21.4
+114899                13.06             6.9          21.4
+{\ldots}                     {\ldots}             {\ldots}           {\ldots}
+115802                13.06             6.9          21.4
+115803                13.06             6.9          21.4
+115804                13.06             6.9          21.4
+115805                13.06             6.9          21.4
+115806                13.06             6.9          21.4
+
+        handwashing\_facilities  hospital\_beds\_per\_thousand  life\_expectancy  \textbackslash{}
+114895                  87.847                        1.38            75.05
+114896                  87.847                        1.38            75.05
+114897                  87.847                        1.38            75.05
+114898                  87.847                        1.38            75.05
+114899                  87.847                        1.38            75.05
+{\ldots}                        {\ldots}                         {\ldots}              {\ldots}
+115802                  87.847                        1.38            75.05
+115803                  87.847                        1.38            75.05
+115804                  87.847                        1.38            75.05
+115805                  87.847                        1.38            75.05
+115806                  87.847                        1.38            75.05
+
+        human\_development\_index  excess\_mortality\_cumulative\_absolute  \textbackslash{}
+114895                    0.779                                   NaN
+114896                    0.779                                   NaN
+114897                    0.779                                   NaN
+114898                    0.779                                   NaN
+114899                    0.779                                 -33.7
+{\ldots}                         {\ldots}                                   {\ldots}
+115802                    0.779                                   NaN
+115803                    0.779                                   NaN
+115804                    0.779                                   NaN
+115805                    0.779                                   NaN
+115806                    0.779                                   NaN
+
+        excess\_mortality\_cumulative  excess\_mortality  \textbackslash{}
+114895                          NaN               NaN
+114896                          NaN               NaN
+114897                          NaN               NaN
+114898                          NaN               NaN
+114899                         -0.2              -0.2
+{\ldots}                             {\ldots}               {\ldots}
+115802                          NaN               NaN
+115803                          NaN               NaN
+115804                          NaN               NaN
+115805                          NaN               NaN
+115806                          NaN               NaN
+
+        excess\_mortality\_cumulative\_per\_million
+114895                                      NaN
+114896                                      NaN
+114897                                      NaN
+114898                                      NaN
+114899                                -0.258709
+{\ldots}                                         {\ldots}
+115802                                      NaN
+115803                                      NaN
+115804                                      NaN
+115805                                      NaN
+115806                                      NaN
+
+[912 rows x 67 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{pd\PYZus{}MEX}\PY{o}{=}\PY{n}{pd\PYZus{}MEX}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{drop}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{pd\PYZus{}MEX}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+    iso\_code      continent location        date  total\_cases  new\_cases  \textbackslash{}
+0        MEX  North America   Mexico  2020-01-01          NaN        NaN
+1        MEX  North America   Mexico  2020-01-02          NaN        NaN
+2        MEX  North America   Mexico  2020-01-03          NaN        NaN
+3        MEX  North America   Mexico  2020-01-04          NaN        NaN
+4        MEX  North America   Mexico  2020-01-05          NaN        NaN
+..       {\ldots}            {\ldots}      {\ldots}         {\ldots}          {\ldots}        {\ldots}
+907      MEX  North America   Mexico  2022-06-26    5962615.0     5883.0
+908      MEX  North America   Mexico  2022-06-27    5965958.0     3343.0
+909      MEX  North America   Mexico  2022-06-28    5986917.0    20959.0
+910      MEX  North America   Mexico  2022-06-29    5986917.0        0.0
+911      MEX  North America   Mexico  2022-06-30    6034602.0    47685.0
+
+     new\_cases\_smoothed  total\_deaths  new\_deaths  new\_deaths\_smoothed  \textbackslash{}
+0                   NaN           NaN         NaN                  NaN
+1                   NaN           NaN         NaN                  NaN
+2                   NaN           NaN         NaN                  NaN
+3                   NaN           NaN         NaN                  NaN
+4                   NaN           NaN         NaN                  NaN
+..                  {\ldots}           {\ldots}         {\ldots}                  {\ldots}
+907           12415.714      325580.0         4.0               24.571
+908           12588.714      325596.0        16.0               25.571
+909           13618.286      325638.0        42.0               25.714
+910           13618.286      325638.0         0.0               25.714
+911           18235.571      325716.0        78.0               32.714
+
+     total\_cases\_per\_million  new\_cases\_per\_million  \textbackslash{}
+0                        NaN                    NaN
+1                        NaN                    NaN
+2                        NaN                    NaN
+3                        NaN                    NaN
+4                        NaN                    NaN
+..                       {\ldots}                    {\ldots}
+907                45773.940                 45.163
+908                45799.603                 25.664
+909                45960.502                160.899
+910                45960.502                  0.000
+911                46326.571                366.069
+
+     new\_cases\_smoothed\_per\_million  total\_deaths\_per\_million  \textbackslash{}
+0                               NaN                       NaN
+1                               NaN                       NaN
+2                               NaN                       NaN
+3                               NaN                       NaN
+4                               NaN                       NaN
+..                              {\ldots}                       {\ldots}
+907                          95.313                  2499.420
+908                          96.641                  2499.543
+909                         104.545                  2499.865
+910                         104.545                  2499.865
+911                         139.991                  2500.464
+
+     new\_deaths\_per\_million  new\_deaths\_smoothed\_per\_million  \textbackslash{}
+0                       NaN                              NaN
+1                       NaN                              NaN
+2                       NaN                              NaN
+3                       NaN                              NaN
+4                       NaN                              NaN
+..                      {\ldots}                              {\ldots}
+907                   0.031                            0.189
+908                   0.123                            0.196
+909                   0.322                            0.197
+910                   0.000                            0.197
+911                   0.599                            0.251
+
+     reproduction\_rate  icu\_patients  icu\_patients\_per\_million  hosp\_patients  \textbackslash{}
+0                  NaN           NaN                       NaN            NaN
+1                  NaN           NaN                       NaN            NaN
+2                  NaN           NaN                       NaN            NaN
+3                  NaN           NaN                       NaN            NaN
+4                  NaN           NaN                       NaN            NaN
+..                 {\ldots}           {\ldots}                       {\ldots}            {\ldots}
+907               1.59           NaN                       NaN            NaN
+908                NaN           NaN                       NaN            NaN
+909                NaN           NaN                       NaN            NaN
+910                NaN           NaN                       NaN            NaN
+911                NaN           NaN                       NaN            NaN
+
+     hosp\_patients\_per\_million  weekly\_icu\_admissions  \textbackslash{}
+0                          NaN                    NaN
+1                          NaN                    NaN
+2                          NaN                    NaN
+3                          NaN                    NaN
+4                          NaN                    NaN
+..                         {\ldots}                    {\ldots}
+907                        NaN                    NaN
+908                        NaN                    NaN
+909                        NaN                    NaN
+910                        NaN                    NaN
+911                        NaN                    NaN
+
+     weekly\_icu\_admissions\_per\_million  weekly\_hosp\_admissions  \textbackslash{}
+0                                  NaN                     NaN
+1                                  NaN                     NaN
+2                                  NaN                     NaN
+3                                  NaN                     NaN
+4                                  NaN                     NaN
+..                                 {\ldots}                     {\ldots}
+907                                NaN                     NaN
+908                                NaN                     NaN
+909                                NaN                     NaN
+910                                NaN                     NaN
+911                                NaN                     NaN
+
+     weekly\_hosp\_admissions\_per\_million  total\_tests  new\_tests  \textbackslash{}
+0                                   NaN         25.0       25.0
+1                                   NaN         97.0       72.0
+2                                   NaN        186.0       89.0
+3                                   NaN        231.0       45.0
+4                                   NaN        312.0       81.0
+..                                  {\ldots}          {\ldots}        {\ldots}
+907                                 NaN          NaN        NaN
+908                                 NaN          NaN        NaN
+909                                 NaN          NaN        NaN
+910                                 NaN          NaN        NaN
+911                                 NaN          NaN        NaN
+
+     total\_tests\_per\_thousand  new\_tests\_per\_thousand  new\_tests\_smoothed  \textbackslash{}
+0                       0.000                   0.000                 NaN
+1                       0.001                   0.001                 NaN
+2                       0.001                   0.001                 NaN
+3                       0.002                   0.000                 NaN
+4                       0.002                   0.001                 NaN
+..                        {\ldots}                     {\ldots}                 {\ldots}
+907                       NaN                     NaN                 NaN
+908                       NaN                     NaN                 NaN
+909                       NaN                     NaN                 NaN
+910                       NaN                     NaN                 NaN
+911                       NaN                     NaN                 NaN
+
+     new\_tests\_smoothed\_per\_thousand  positive\_rate  tests\_per\_case  \textbackslash{}
+0                                NaN            NaN             NaN
+1                                NaN            NaN             NaN
+2                                NaN            NaN             NaN
+3                                NaN            NaN             NaN
+4                                NaN            NaN             NaN
+..                               {\ldots}            {\ldots}             {\ldots}
+907                              NaN            NaN             NaN
+908                              NaN            NaN             NaN
+909                              NaN            NaN             NaN
+910                              NaN            NaN             NaN
+911                              NaN            NaN             NaN
+
+       tests\_units  total\_vaccinations  people\_vaccinated  \textbackslash{}
+0    people tested                 NaN                NaN
+1    people tested                 NaN                NaN
+2    people tested                 NaN                NaN
+3    people tested                 NaN                NaN
+4    people tested                 NaN                NaN
+..             {\ldots}                 {\ldots}                {\ldots}
+907            NaN                 NaN                NaN
+908            NaN                 NaN                NaN
+909            NaN                 NaN                NaN
+910            NaN                 NaN                NaN
+911            NaN                 NaN                NaN
+
+     people\_fully\_vaccinated  total\_boosters  new\_vaccinations  \textbackslash{}
+0                        NaN             NaN               NaN
+1                        NaN             NaN               NaN
+2                        NaN             NaN               NaN
+3                        NaN             NaN               NaN
+4                        NaN             NaN               NaN
+..                       {\ldots}             {\ldots}               {\ldots}
+907                      NaN             NaN               NaN
+908                      NaN             NaN               NaN
+909                      NaN             NaN               NaN
+910                      NaN             NaN               NaN
+911                      NaN             NaN               NaN
+
+     new\_vaccinations\_smoothed  total\_vaccinations\_per\_hundred  \textbackslash{}
+0                          NaN                             NaN
+1                          NaN                             NaN
+2                          NaN                             NaN
+3                          NaN                             NaN
+4                          NaN                             NaN
+..                         {\ldots}                             {\ldots}
+907                        NaN                             NaN
+908                        NaN                             NaN
+909                        NaN                             NaN
+910                        NaN                             NaN
+911                        NaN                             NaN
+
+     people\_vaccinated\_per\_hundred  people\_fully\_vaccinated\_per\_hundred  \textbackslash{}
+0                              NaN                                  NaN
+1                              NaN                                  NaN
+2                              NaN                                  NaN
+3                              NaN                                  NaN
+4                              NaN                                  NaN
+..                             {\ldots}                                  {\ldots}
+907                            NaN                                  NaN
+908                            NaN                                  NaN
+909                            NaN                                  NaN
+910                            NaN                                  NaN
+911                            NaN                                  NaN
+
+     total\_boosters\_per\_hundred  new\_vaccinations\_smoothed\_per\_million  \textbackslash{}
+0                           NaN                                    NaN
+1                           NaN                                    NaN
+2                           NaN                                    NaN
+3                           NaN                                    NaN
+4                           NaN                                    NaN
+..                          {\ldots}                                    {\ldots}
+907                         NaN                                    NaN
+908                         NaN                                    NaN
+909                         NaN                                    NaN
+910                         NaN                                    NaN
+911                         NaN                                    NaN
+
+     new\_people\_vaccinated\_smoothed  \textbackslash{}
+0                               NaN
+1                               NaN
+2                               NaN
+3                               NaN
+4                               NaN
+..                              {\ldots}
+907                             NaN
+908                             NaN
+909                             NaN
+910                             NaN
+911                             NaN
+
+     new\_people\_vaccinated\_smoothed\_per\_hundred  stringency\_index  \textbackslash{}
+0                                           NaN               0.0
+1                                           NaN               0.0
+2                                           NaN               0.0
+3                                           NaN               0.0
+4                                           NaN               0.0
+..                                          {\ldots}               {\ldots}
+907                                         NaN               NaN
+908                                         NaN               NaN
+909                                         NaN               NaN
+910                                         NaN               NaN
+911                                         NaN               NaN
+
+      population  population\_density  median\_age  aged\_65\_older  \textbackslash{}
+0    130262220.0              66.444        29.3          6.857
+1    130262220.0              66.444        29.3          6.857
+2    130262220.0              66.444        29.3          6.857
+3    130262220.0              66.444        29.3          6.857
+4    130262220.0              66.444        29.3          6.857
+..           {\ldots}                 {\ldots}         {\ldots}            {\ldots}
+907  130262220.0              66.444        29.3          6.857
+908  130262220.0              66.444        29.3          6.857
+909  130262220.0              66.444        29.3          6.857
+910  130262220.0              66.444        29.3          6.857
+911  130262220.0              66.444        29.3          6.857
+
+     aged\_70\_older  gdp\_per\_capita  extreme\_poverty  cardiovasc\_death\_rate  \textbackslash{}
+0            4.321       17336.469              2.5                152.783
+1            4.321       17336.469              2.5                152.783
+2            4.321       17336.469              2.5                152.783
+3            4.321       17336.469              2.5                152.783
+4            4.321       17336.469              2.5                152.783
+..             {\ldots}             {\ldots}              {\ldots}                    {\ldots}
+907          4.321       17336.469              2.5                152.783
+908          4.321       17336.469              2.5                152.783
+909          4.321       17336.469              2.5                152.783
+910          4.321       17336.469              2.5                152.783
+911          4.321       17336.469              2.5                152.783
+
+     diabetes\_prevalence  female\_smokers  male\_smokers  \textbackslash{}
+0                  13.06             6.9          21.4
+1                  13.06             6.9          21.4
+2                  13.06             6.9          21.4
+3                  13.06             6.9          21.4
+4                  13.06             6.9          21.4
+..                   {\ldots}             {\ldots}           {\ldots}
+907                13.06             6.9          21.4
+908                13.06             6.9          21.4
+909                13.06             6.9          21.4
+910                13.06             6.9          21.4
+911                13.06             6.9          21.4
+
+     handwashing\_facilities  hospital\_beds\_per\_thousand  life\_expectancy  \textbackslash{}
+0                    87.847                        1.38            75.05
+1                    87.847                        1.38            75.05
+2                    87.847                        1.38            75.05
+3                    87.847                        1.38            75.05
+4                    87.847                        1.38            75.05
+..                      {\ldots}                         {\ldots}              {\ldots}
+907                  87.847                        1.38            75.05
+908                  87.847                        1.38            75.05
+909                  87.847                        1.38            75.05
+910                  87.847                        1.38            75.05
+911                  87.847                        1.38            75.05
+
+     human\_development\_index  excess\_mortality\_cumulative\_absolute  \textbackslash{}
+0                      0.779                                   NaN
+1                      0.779                                   NaN
+2                      0.779                                   NaN
+3                      0.779                                   NaN
+4                      0.779                                 -33.7
+..                       {\ldots}                                   {\ldots}
+907                    0.779                                   NaN
+908                    0.779                                   NaN
+909                    0.779                                   NaN
+910                    0.779                                   NaN
+911                    0.779                                   NaN
+
+     excess\_mortality\_cumulative  excess\_mortality  \textbackslash{}
+0                            NaN               NaN
+1                            NaN               NaN
+2                            NaN               NaN
+3                            NaN               NaN
+4                           -0.2              -0.2
+..                           {\ldots}               {\ldots}
+907                          NaN               NaN
+908                          NaN               NaN
+909                          NaN               NaN
+910                          NaN               NaN
+911                          NaN               NaN
+
+     excess\_mortality\_cumulative\_per\_million
+0                                        NaN
+1                                        NaN
+2                                        NaN
+3                                        NaN
+4                                  -0.258709
+..                                       {\ldots}
+907                                      NaN
+908                                      NaN
+909                                      NaN
+910                                      NaN
+911                                      NaN
+
+[912 rows x 67 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{plotly}\PY{n+nn}{.}\PY{n+nn}{express} \PY{k}{as} \PY{n+nn}{px} 
+
+
+\PY{n}{fig}\PY{o}{=}\PY{n}{px}\PY{o}{.}\PY{n}{line}\PY{p}{(}\PY{n}{pd\PYZus{}MEX}\PY{p}{,}\PY{n}{x}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{date}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{y}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{total\PYZus{}cases}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{title}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Relative cases overtime of COVID\PYZhy{}19}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{fig}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{b\PYZus{}MEX}\PY{o}{=}\PY{n}{pd\PYZus{}raw}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{location}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{==}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Mexico}\PY{l+s+s1}{\PYZsq{}}
+\PY{n}{b\PYZus{}UK}\PY{o}{=}\PY{n}{pd\PYZus{}raw}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{location}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{==}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{United Kingdom}\PY{l+s+s1}{\PYZsq{}}
+\PY{n}{b\PYZus{}US}\PY{o}{=}\PY{n}{pd\PYZus{}raw}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{location}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{==}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{United States}\PY{l+s+s1}{\PYZsq{}}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{b\PYZus{}all}\PY{o}{=}\PY{n}{b\PYZus{}MEX}\PY{o}{|}\PY{n}{b\PYZus{}UK}\PY{o}{|}\PY{n}{b\PYZus{}US}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{pd\PYZus{}list}\PY{o}{=}\PY{n}{pd\PYZus{}raw}\PY{p}{[}\PY{n}{b\PYZus{}all}\PY{p}{]}
+\PY{n}{pd\PYZus{}list}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       iso\_code      continent       location        date  total\_cases  \textbackslash{}
+114895      MEX  North America         Mexico  2020-01-01          NaN
+114896      MEX  North America         Mexico  2020-01-02          NaN
+114897      MEX  North America         Mexico  2020-01-03          NaN
+114898      MEX  North America         Mexico  2020-01-04          NaN
+114899      MEX  North America         Mexico  2020-01-05          NaN
+{\ldots}         {\ldots}            {\ldots}            {\ldots}         {\ldots}          {\ldots}
+187372      USA  North America  United States  2022-06-26   87042385.0
+187373      USA  North America  United States  2022-06-27   87167855.0
+187374      USA  North America  United States  2022-06-28   87293787.0
+187375      USA  North America  United States  2022-06-29   87487627.0
+187376      USA  North America  United States  2022-06-30   87623593.0
+
+        new\_cases  new\_cases\_smoothed  total\_deaths  new\_deaths  \textbackslash{}
+114895        NaN                 NaN           NaN         NaN
+114896        NaN                 NaN           NaN         NaN
+114897        NaN                 NaN           NaN         NaN
+114898        NaN                 NaN           NaN         NaN
+114899        NaN                 NaN           NaN         NaN
+{\ldots}           {\ldots}                 {\ldots}           {\ldots}         {\ldots}
+187372    18551.0          102120.714     1015938.0         5.0
+187373   125470.0          106678.143     1016208.0       270.0
+187374   125932.0          108291.000     1016757.0       549.0
+187375   193840.0          109687.429     1017467.0       710.0
+187376   135966.0          107945.857     1017266.0         NaN
+
+        new\_deaths\_smoothed  total\_cases\_per\_million  new\_cases\_per\_million  \textbackslash{}
+114895                  NaN                      NaN                    NaN
+114896                  NaN                      NaN                    NaN
+114897                  NaN                      NaN                    NaN
+114898                  NaN                      NaN                    NaN
+114899                  NaN                      NaN                    NaN
+{\ldots}                     {\ldots}                      {\ldots}                    {\ldots}
+187372              343.429               261455.223                 55.723
+187373              370.571               261832.106                376.883
+187374              380.143               262210.377                378.271
+187375              358.714               262792.627                582.251
+187376                  NaN               263201.038                408.410
+
+        new\_cases\_smoothed\_per\_million  total\_deaths\_per\_million  \textbackslash{}
+114895                             NaN                       NaN
+114896                             NaN                       NaN
+114897                             NaN                       NaN
+114898                             NaN                       NaN
+114899                             NaN                       NaN
+{\ldots}                                {\ldots}                       {\ldots}
+187372                         306.747                  3051.643
+187373                         320.437                  3052.454
+187374                         325.281                  3054.103
+187375                         329.476                  3056.236
+187376                         324.244                  3055.632
+
+        new\_deaths\_per\_million  new\_deaths\_smoothed\_per\_million  \textbackslash{}
+114895                     NaN                              NaN
+114896                     NaN                              NaN
+114897                     NaN                              NaN
+114898                     NaN                              NaN
+114899                     NaN                              NaN
+{\ldots}                        {\ldots}                              {\ldots}
+187372                   0.015                            1.032
+187373                   0.811                            1.113
+187374                   1.649                            1.142
+187375                   2.133                            1.077
+187376                     NaN                              NaN
+
+        reproduction\_rate  icu\_patients  icu\_patients\_per\_million  \textbackslash{}
+114895                NaN           NaN                       NaN
+114896                NaN           NaN                       NaN
+114897                NaN           NaN                       NaN
+114898                NaN           NaN                       NaN
+114899                NaN           NaN                       NaN
+{\ldots}                   {\ldots}           {\ldots}                       {\ldots}
+187372               1.05        3099.0                     9.309
+187373                NaN        3236.0                     9.720
+187374                NaN        3319.0                     9.970
+187375                NaN           NaN                       NaN
+187376                NaN           NaN                       NaN
+
+        hosp\_patients  hosp\_patients\_per\_million  weekly\_icu\_admissions  \textbackslash{}
+114895            NaN                        NaN                    NaN
+114896            NaN                        NaN                    NaN
+114897            NaN                        NaN                    NaN
+114898            NaN                        NaN                    NaN
+114899            NaN                        NaN                    NaN
+{\ldots}               {\ldots}                        {\ldots}                    {\ldots}
+187372        28165.0                     84.601                    NaN
+187373        29110.0                     87.440                    NaN
+187374        29476.0                     88.539                    NaN
+187375            NaN                        NaN                    NaN
+187376            NaN                        NaN                    NaN
+
+        weekly\_icu\_admissions\_per\_million  weekly\_hosp\_admissions  \textbackslash{}
+114895                                NaN                     NaN
+114896                                NaN                     NaN
+114897                                NaN                     NaN
+114898                                NaN                     NaN
+114899                                NaN                     NaN
+{\ldots}                                   {\ldots}                     {\ldots}
+187372                                NaN                 34397.0
+187373                                NaN                 34974.0
+187374                                NaN                 35560.0
+187375                                NaN                     NaN
+187376                                NaN                     NaN
+
+        weekly\_hosp\_admissions\_per\_million  total\_tests  new\_tests  \textbackslash{}
+114895                                 NaN         25.0       25.0
+114896                                 NaN         97.0       72.0
+114897                                 NaN        186.0       89.0
+114898                                 NaN        231.0       45.0
+114899                                 NaN        312.0       81.0
+{\ldots}                                    {\ldots}          {\ldots}        {\ldots}
+187372                             103.321          NaN        NaN
+187373                             105.054          NaN        NaN
+187374                             106.814          NaN        NaN
+187375                                 NaN          NaN        NaN
+187376                                 NaN          NaN        NaN
+
+        total\_tests\_per\_thousand  new\_tests\_per\_thousand  new\_tests\_smoothed  \textbackslash{}
+114895                     0.000                   0.000                 NaN
+114896                     0.001                   0.001                 NaN
+114897                     0.001                   0.001                 NaN
+114898                     0.002                   0.000                 NaN
+114899                     0.002                   0.001                 NaN
+{\ldots}                          {\ldots}                     {\ldots}                 {\ldots}
+187372                       NaN                     NaN                 NaN
+187373                       NaN                     NaN                 NaN
+187374                       NaN                     NaN                 NaN
+187375                       NaN                     NaN                 NaN
+187376                       NaN                     NaN                 NaN
+
+        new\_tests\_smoothed\_per\_thousand  positive\_rate  tests\_per\_case  \textbackslash{}
+114895                              NaN            NaN             NaN
+114896                              NaN            NaN             NaN
+114897                              NaN            NaN             NaN
+114898                              NaN            NaN             NaN
+114899                              NaN            NaN             NaN
+{\ldots}                                 {\ldots}            {\ldots}             {\ldots}
+187372                              NaN            NaN             NaN
+187373                              NaN            NaN             NaN
+187374                              NaN            NaN             NaN
+187375                              NaN            NaN             NaN
+187376                              NaN            NaN             NaN
+
+          tests\_units  total\_vaccinations  people\_vaccinated  \textbackslash{}
+114895  people tested                 NaN                NaN
+114896  people tested                 NaN                NaN
+114897  people tested                 NaN                NaN
+114898  people tested                 NaN                NaN
+114899  people tested                 NaN                NaN
+{\ldots}               {\ldots}                 {\ldots}                {\ldots}
+187372            NaN                 NaN                NaN
+187373            NaN                 NaN                NaN
+187374            NaN                 NaN                NaN
+187375            NaN                 NaN                NaN
+187376            NaN                 NaN                NaN
+
+        people\_fully\_vaccinated  total\_boosters  new\_vaccinations  \textbackslash{}
+114895                      NaN             NaN               NaN
+114896                      NaN             NaN               NaN
+114897                      NaN             NaN               NaN
+114898                      NaN             NaN               NaN
+114899                      NaN             NaN               NaN
+{\ldots}                         {\ldots}             {\ldots}               {\ldots}
+187372                      NaN             NaN               NaN
+187373                      NaN             NaN               NaN
+187374                      NaN             NaN               NaN
+187375                      NaN             NaN               NaN
+187376                      NaN             NaN               NaN
+
+        new\_vaccinations\_smoothed  total\_vaccinations\_per\_hundred  \textbackslash{}
+114895                        NaN                             NaN
+114896                        NaN                             NaN
+114897                        NaN                             NaN
+114898                        NaN                             NaN
+114899                        NaN                             NaN
+{\ldots}                           {\ldots}                             {\ldots}
+187372                        NaN                             NaN
+187373                        NaN                             NaN
+187374                        NaN                             NaN
+187375                        NaN                             NaN
+187376                        NaN                             NaN
+
+        people\_vaccinated\_per\_hundred  people\_fully\_vaccinated\_per\_hundred  \textbackslash{}
+114895                            NaN                                  NaN
+114896                            NaN                                  NaN
+114897                            NaN                                  NaN
+114898                            NaN                                  NaN
+114899                            NaN                                  NaN
+{\ldots}                               {\ldots}                                  {\ldots}
+187372                            NaN                                  NaN
+187373                            NaN                                  NaN
+187374                            NaN                                  NaN
+187375                            NaN                                  NaN
+187376                            NaN                                  NaN
+
+        total\_boosters\_per\_hundred  new\_vaccinations\_smoothed\_per\_million  \textbackslash{}
+114895                         NaN                                    NaN
+114896                         NaN                                    NaN
+114897                         NaN                                    NaN
+114898                         NaN                                    NaN
+114899                         NaN                                    NaN
+{\ldots}                            {\ldots}                                    {\ldots}
+187372                         NaN                                    NaN
+187373                         NaN                                    NaN
+187374                         NaN                                    NaN
+187375                         NaN                                    NaN
+187376                         NaN                                    NaN
+
+        new\_people\_vaccinated\_smoothed  \textbackslash{}
+114895                             NaN
+114896                             NaN
+114897                             NaN
+114898                             NaN
+114899                             NaN
+{\ldots}                                {\ldots}
+187372                             NaN
+187373                             NaN
+187374                             NaN
+187375                             NaN
+187376                             NaN
+
+        new\_people\_vaccinated\_smoothed\_per\_hundred  stringency\_index  \textbackslash{}
+114895                                         NaN               0.0
+114896                                         NaN               0.0
+114897                                         NaN               0.0
+114898                                         NaN               0.0
+114899                                         NaN               0.0
+{\ldots}                                            {\ldots}               {\ldots}
+187372                                         NaN               NaN
+187373                                         NaN               NaN
+187374                                         NaN               NaN
+187375                                         NaN               NaN
+187376                                         NaN               NaN
+
+         population  population\_density  median\_age  aged\_65\_older  \textbackslash{}
+114895  130262220.0              66.444        29.3          6.857
+114896  130262220.0              66.444        29.3          6.857
+114897  130262220.0              66.444        29.3          6.857
+114898  130262220.0              66.444        29.3          6.857
+114899  130262220.0              66.444        29.3          6.857
+{\ldots}             {\ldots}                 {\ldots}         {\ldots}            {\ldots}
+187372  332915074.0              35.608        38.3         15.413
+187373  332915074.0              35.608        38.3         15.413
+187374  332915074.0              35.608        38.3         15.413
+187375  332915074.0              35.608        38.3         15.413
+187376  332915074.0              35.608        38.3         15.413
+
+        aged\_70\_older  gdp\_per\_capita  extreme\_poverty  cardiovasc\_death\_rate  \textbackslash{}
+114895          4.321       17336.469              2.5                152.783
+114896          4.321       17336.469              2.5                152.783
+114897          4.321       17336.469              2.5                152.783
+114898          4.321       17336.469              2.5                152.783
+114899          4.321       17336.469              2.5                152.783
+{\ldots}               {\ldots}             {\ldots}              {\ldots}                    {\ldots}
+187372          9.732       54225.446              1.2                151.089
+187373          9.732       54225.446              1.2                151.089
+187374          9.732       54225.446              1.2                151.089
+187375          9.732       54225.446              1.2                151.089
+187376          9.732       54225.446              1.2                151.089
+
+        diabetes\_prevalence  female\_smokers  male\_smokers  \textbackslash{}
+114895                13.06             6.9          21.4
+114896                13.06             6.9          21.4
+114897                13.06             6.9          21.4
+114898                13.06             6.9          21.4
+114899                13.06             6.9          21.4
+{\ldots}                     {\ldots}             {\ldots}           {\ldots}
+187372                10.79            19.1          24.6
+187373                10.79            19.1          24.6
+187374                10.79            19.1          24.6
+187375                10.79            19.1          24.6
+187376                10.79            19.1          24.6
+
+        handwashing\_facilities  hospital\_beds\_per\_thousand  life\_expectancy  \textbackslash{}
+114895                  87.847                        1.38            75.05
+114896                  87.847                        1.38            75.05
+114897                  87.847                        1.38            75.05
+114898                  87.847                        1.38            75.05
+114899                  87.847                        1.38            75.05
+{\ldots}                        {\ldots}                         {\ldots}              {\ldots}
+187372                     NaN                        2.77            78.86
+187373                     NaN                        2.77            78.86
+187374                     NaN                        2.77            78.86
+187375                     NaN                        2.77            78.86
+187376                     NaN                        2.77            78.86
+
+        human\_development\_index  excess\_mortality\_cumulative\_absolute  \textbackslash{}
+114895                    0.779                                   NaN
+114896                    0.779                                   NaN
+114897                    0.779                                   NaN
+114898                    0.779                                   NaN
+114899                    0.779                                 -33.7
+{\ldots}                         {\ldots}                                   {\ldots}
+187372                    0.926                                   NaN
+187373                    0.926                                   NaN
+187374                    0.926                                   NaN
+187375                    0.926                                   NaN
+187376                    0.926                                   NaN
+
+        excess\_mortality\_cumulative  excess\_mortality  \textbackslash{}
+114895                          NaN               NaN
+114896                          NaN               NaN
+114897                          NaN               NaN
+114898                          NaN               NaN
+114899                         -0.2              -0.2
+{\ldots}                             {\ldots}               {\ldots}
+187372                          NaN               NaN
+187373                          NaN               NaN
+187374                          NaN               NaN
+187375                          NaN               NaN
+187376                          NaN               NaN
+
+        excess\_mortality\_cumulative\_per\_million
+114895                                      NaN
+114896                                      NaN
+114897                                      NaN
+114898                                      NaN
+114899                                -0.258709
+{\ldots}                                         {\ldots}
+187372                                      NaN
+187373                                      NaN
+187374                                      NaN
+187375                                      NaN
+187376                                      NaN
+
+[2685 rows x 67 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{pd\PYZus{}MEX}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{total\PYZus{}cases/population}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n}{pd\PYZus{}MEX}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{total\PYZus{}cases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{/}\PY{n}{pd\PYZus{}MEX}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{population}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{36}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{fig}\PY{o}{=}\PY{n}{px}\PY{o}{.}\PY{n}{line}\PY{p}{(}\PY{n}{pd\PYZus{}list}\PY{p}{,}\PY{n}{x}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{date}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{y}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{total\PYZus{}cases}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{location}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{title}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Relative cases overtime of COVID\PYZhy{}19}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{fig}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{37}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{pd\PYZus{}list}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{total\PYZus{}cases/population}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n}{pd\PYZus{}list}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{total\PYZus{}cases}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{/}\PY{n}{pd\PYZus{}list}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{population}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+/var/folders/d3/q2971dl14gn49z9p9b7v7kyr0000gn/T/ipykernel\_8975/4213649256.py:1:
+SettingWithCopyWarning:
+
+
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row\_indexer,col\_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-
+docs/stable/user\_guide/indexing.html\#returning-a-view-versus-a-copy
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{38}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{fig}\PY{o}{=}\PY{n}{px}\PY{o}{.}\PY{n}{line}\PY{p}{(}\PY{n}{pd\PYZus{}list}\PY{p}{,}\PY{n}{x}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{date}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{y}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{total\PYZus{}cases/population}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{location}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{title}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Relative cases overtime of COVID\PYZhy{}19}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{fig}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
